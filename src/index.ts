@@ -1,7 +1,8 @@
 import * as THREE from "three";
 import * as fgui from "fairygui-three";
 import { PerspectiveCamera, AxesHelper, GridHelper, Group } from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { VRButton } from "three/examples/jsm/webxr/VRButton"
 
 export class Threescene {
     private scene: THREE.Scene
@@ -23,8 +24,14 @@ export class Threescene {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.localClippingEnabled = true;
         this.renderer.autoClear = false;
+        
+        // Enable WebXR
+        this.renderer.xr.enabled = true;
 
         document.body.appendChild(this.renderer.domElement);
+        
+        // Add VR Button
+        document.body.appendChild(VRButton.createButton(this.renderer));
         window.addEventListener('resize', () => {
             this.renderer.setSize(window.innerWidth, window.innerHeight);
             this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -47,7 +54,8 @@ export class Threescene {
 
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
-        this.animate();
+        // Use setAnimationLoop for WebXR compatibility
+        this.renderer.setAnimationLoop(this.animate);
     }
 
     private start() {
@@ -79,7 +87,6 @@ export class Threescene {
     }
 
     private animate = () => {
-        requestAnimationFrame(this.animate)
         this.render()
     }
 }

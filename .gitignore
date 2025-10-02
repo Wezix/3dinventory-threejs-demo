@@ -3,3 +3,4 @@ node_modules
 .objs
 build
 package-lock.json
+.vercel
